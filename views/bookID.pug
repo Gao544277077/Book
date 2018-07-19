@@ -1,0 +1,11 @@
+extends layout
+  
+block content
+        br
+        br
+        br
+        h1 #{title}
+        ul.list-group
+            each book, i in books
+                li.list-group-item
+                    a(href="/book/"+book.id)=book.id

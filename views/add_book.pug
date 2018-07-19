@@ -1,0 +1,19 @@
+extends layout
+  
+block content
+        br
+        br
+        br
+        h1 Add Book
+        form(method='post',action='/add')
+            #form-group
+                label Barcode:
+                input.form-control(name='barcode',type='text')    
+            #form-group
+                label Name:
+                input.form-control(name='name',type='text')   
+            #form-group
+                label Price:
+                 input.form-control(name='price',type='number')   
+
+                 input.btn.btn-primary(type='submit', value='submit')

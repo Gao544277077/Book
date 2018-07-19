@@ -1,0 +1,11 @@
+extends layout
+  
+block content
+        br
+        br
+        br
+        h1 Edit
+        ul.list-group
+            each book, i in books
+                li.list-group-item
+                    a(href="/book/update_book/"+book.id)=book.name

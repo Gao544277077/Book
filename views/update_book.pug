@@ -1,0 +1,19 @@
+extends layout
+  
+block content
+        br
+        br
+        br
+        h1 Edit Book
+        form(method='POST',action='/book/update_book/'+book.id)
+            #form-group
+                label Barcode:
+                input.form-control(name='barcode',type='text',value=book.barcode)    
+            #form-group
+                label Name:
+                input.form-control(name='name',type='text',value=book.name)   
+            #form-group
+                label Price:
+                 input.form-control(name='price',type='number',value=book.price)   
+
+                 input.btn.btn-primary(type='submit', value='submit')

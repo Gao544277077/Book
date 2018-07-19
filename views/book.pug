@@ -1,0 +1,17 @@
+extends layout
+  
+block content
+
+
+    br
+    br
+    br
+    h1 Book detail
+    h5='Barcode:'+ book.barcode
+    h5='Name: '+ book.name
+    h5='Price: $'+ book.price
+    hr
+      
+    a.btn.btn-default(href='/paypal/'+book._id) Buy
+    a.btn.btn-default(href='/book/update_book/'+book._id) Edit
+    a.btn.btn-danger.delete-book(href='#',data-id=book._id) DELETE

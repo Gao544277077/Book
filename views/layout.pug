@@ -1,0 +1,42 @@
+doctype htlm
+html
+    head 
+        title PubHub
+        link(rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")           
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    body
+        nav.navbar.navbar-inverse.navbar-fixed-top
+            .container
+                .navbar-header
+                    button.navbar-toggle.collapsed(type='button',data-toggle='collapse',data-traget="#navbar",aria-expanded="false",aria-controls="navbar")
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand(href="/") PubHub
+                #navbar.collapse.navbar-collapse
+                    ul.nav.navbar-nav
+                        li
+                            a(href="/") Home
+                        li
+                            a(href="/bookID") ID
+                        li 
+                            a(href="/add") Addbook
+                        li
+                            a(href="/edit") Edit 
+                        li
+                            a(href="/paypal") shopping cart 
+                             
+        .container
+            block content
+            br
+            br
+            hr
+        <div id="paypal-button"></div>
+        <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+        script
+            include ./check.js
+
+        script
+            include ./delete.js
+        
