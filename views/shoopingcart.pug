@@ -1,0 +1,20 @@
+extends layout
+  
+block content
+        br
+        br
+        br
+        h1 #{title}
+        ul.list-group
+            each order, i in orders
+                li.list-group-item
+                    a(href="/order/"+order.id)=order.name
+        hr
+        h5='Total Price:'+ total
+        <form action='/pay' method='post'> 
+            <input type="submit" value="pay with paypal">
+        </form>   
+        <form action='/' method='get'> 
+            <input type="submit" value="add another">
+        </form>   
+        a.btn.btn-default(href='/clean') clean the shooping cart

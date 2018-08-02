@@ -2,9 +2,11 @@ doctype htlm
 html
     head 
         title PubHub
+       
+         
         link(rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")           
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+         <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
     body
         nav.navbar.navbar-inverse.navbar-fixed-top
             .container
@@ -25,18 +27,13 @@ html
                         li
                             a(href="/edit") Edit 
                         li
-                            a(href="/paypal") shopping cart 
+                            a(href="/shoopingcart") shopping cart 
                              
         .container
             block content
             br
             br
             hr
-        <div id="paypal-button"></div>
-        <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-        script
-            include ./check.js
+          
 
-        script
-            include ./delete.js
         

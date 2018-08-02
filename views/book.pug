@@ -1,17 +1,28 @@
 extends layout
   
 block content
-
-
     br
     br
     br
     h1 Book detail
-    h5='Barcode:'+ book.barcode
-    h5='Name: '+ book.name
-    h5='Price: $'+ book.price
+    h5='book name:'+book.name
+    h5='book price:'+book.price
     hr
-      
-    a.btn.btn-default(href='/paypal/'+book._id) Buy
+    script.
+        var config = {
+            apiKey: "AIzaSyDLHogcgChT5Z2JpRCq9wte-M6RD5GMX7s",
+            authDomain: "project-62f2c.firebaseapp.com",
+            databaseURL: "https://project-62f2c.firebaseio.com",
+            storageBucket: "project-62f2c.appspot.com"
+        };
+        firebase.initializeApp(config);
+    script
+        include ./index.js
+        <!-- firebase button-->
+    <h5>qualities:</h5>
+	    <input type='number' name='item_name' id='item_name'>
+        <input type="button" value="Add cart" onclick="sumbitClick();">
+    br    
+    a.btn.btn-default(href='/paypal/'+book._id) add to cart
     a.btn.btn-default(href='/book/update_book/'+book._id) Edit
     a.btn.btn-danger.delete-book(href='#',data-id=book._id) DELETE
