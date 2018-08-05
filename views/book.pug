@@ -8,21 +8,7 @@ block content
     h5='book name:'+book.name
     h5='book price:'+book.price
     hr
-    script.
-        var config = {
-            apiKey: "AIzaSyDLHogcgChT5Z2JpRCq9wte-M6RD5GMX7s",
-            authDomain: "project-62f2c.firebaseapp.com",
-            databaseURL: "https://project-62f2c.firebaseio.com",
-            storageBucket: "project-62f2c.appspot.com"
-        };
-        firebase.initializeApp(config);
-    script
-        include ./index.js
-        <!-- firebase button-->
-    <h5>qualities:</h5>
-	    <input type='number' name='item_name' id='item_name'>
-        <input type="button" value="Add cart" onclick="sumbitClick();">
     br    
-    a.btn.btn-default(href='/paypal/'+book._id) add to cart
-    a.btn.btn-default(href='/book/update_book/'+book._id) Edit
+    a.btn.btn-default(href='/books/paypal/'+book._id) add to cart
+    a.btn.btn-default(href='/books/book/update_book/'+book._id) Edit
     a.btn.btn-danger.delete-book(href='#',data-id=book._id) DELETE

@@ -8,7 +8,7 @@ block content
         ul.list-group
             each order, i in orders
                 li.list-group-item
-                    a(href="/order/"+order.id)=order.name
+                    a(href="/books/order/"+order.id)=order.name
         hr
         h5='Total Price:'+ total
         <form action='/pay' method='post'> 

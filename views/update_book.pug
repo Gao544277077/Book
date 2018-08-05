@@ -5,15 +5,15 @@ block content
         br
         br
         h1 Edit Book
-        form(method='POST',action='/book/update_book/'+book.id)
+        form(method='post',action='/books/book/update_book/'+books.id)
             #form-group
                 label Barcode:
-                input.form-control(name='barcode',type='text',value=book.barcode)    
+                input.form-control(name='barcode',type='text',value=books.barcode)    
             #form-group
                 label Name:
-                input.form-control(name='name',type='text',value=book.name)   
+                input.form-control(name='name',type='text',value=books.name)   
             #form-group
                 label Price:
-                 input.form-control(name='price',type='number',value=book.price)   
+                 input.form-control(name='price',type='number',value=books.price)   
 
                  input.btn.btn-primary(type='submit', value='submit')
