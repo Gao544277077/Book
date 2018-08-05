@@ -1,48 +1,97 @@
 /*This program is create a book store.I have uses mongodb to create a database called book
  and details of book has three variables: "barcode, name and price". The program is uses mongodb 
- and PUG to CRUD book details on the webpage. And then, I have create another database called
- order, it is uses to build a shooping cart page. In the book detail page, I have create a button called
- add-cart that application will move book's detail to the order page that means I will get the books detail
- in the shooping cart. Finally, I have uses paypal to create an transaction system, it is support to make
- a payment of shooping cart. 
+ and PUG to CRUD book details on the webpage. After then,I have create a database called 'user' and I also
+ have uses Passport config to build a registraction system with 'user' database, And then,I create third 
+ database called order, it is uses to build a shooping cart page. In the book detail page, I have create
+ a button called add-cart that application will move book's detail to the order page that means I will get 
+ the books detail in the shooping cart. Finally, I have uses paypal to make a transaction system, it is 
+ support to make a payment of shooping cart. 
 */
-var express=require('express');
-var path=require('path');
-var http=require("http");
-var mongoose=require("mongoose");
+var express = require('express');
+var path = require('path');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 var paypal=require("paypal-rest-sdk");
-var bodyParser=require('body-parser');
-var pug=require('pug');
+var expressValidator = require('express-validator');
+var flash = require('connect-flash');
+var session = require('express-session');
+var passport = require('passport');
+var config = require('./config/database');
 
 
-//CREATE CONNECTION OF THE MONGODB
-mongoose.connect('mongodb://localhost/nodekb');
-var db= mongoose.connection;
-//CONNETE MONGODB
-db.once("open",function(){
-    console.log("conneted to MongoDB");
+mongoose.connect(config.database);
+var db = mongoose.connection;
+
+// Check connection
+db.once('open', function(){
+  console.log('Connected to MongoDB');
 });
 
-db.on("error",function(err){    
-console.log(err);
+// Check for errors of mongodb
+db.on('error', function(err){
+  console.log(err);
 });
-// uses express lib
-var app=express(); 
-var Book=require('./nodekb/book');
-var Order=require('./nodekb/order');
+
+// Init App
+var app = express();
+
+// Bring in models
+var Book = require('./models/book');
+var Order = require('./models/order');
+var User = require('./models/user');
 
 
-// SET PATH=BOOK/VIEWS
-app.set('view engine','pug');
-app.set('views',__dirname+'/view');
+// use pug engine and set path=views
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
-app.use(bodyParser.urlencoded({ extended:false}));
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
 app.use(bodyParser.json());
-//to calculate total price of order
-total=0;
-// Create a record of shooping cart
-I=[];
 
+//Create express session 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true
+}));
+
+//Express Messages 
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
+});
+
+// Express Validator 
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root;
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
+
+//Create Passport config to build a registraction system
+require('./config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('*', function(req, res, next){
+  res.locals.user = req.user || null;
+  next();
+});
+  
 //CRETE HOME PAGE to view and modify data with bookname
 app.get('/',function(req,res){
     Book.find({},function(err,books){
@@ -56,199 +105,19 @@ app.get('/',function(req,res){
     }
     });
 });
-//Create a shooping cart page and uses 'order' database 
-app.get('/shoopingcart',function(req,res){
-    Order.find({},function(err,orders){
-            if(err){
-                return err;
-            } else {
-        res.render('shoopingcart',{
-            title:"shooping cart ",
-            orders:orders,
-           });
-    };
-    });
-});
 
-app.get('/firebasetest',function(req,res){
-    Book.find({},function(err,books){
-            if(err){
-                return err;
-            } else {
-        res.render('firebasetest',{
-            title:"shooping cart ",
-            books:books,
-           });
-    };
-    });
-});
-// create edit form to edit book detail
-app.post('/book/update_book/:id',function(req,res){   
-    var book={}; 
-    book.barcode=req.body.barcode;
-    book.name=req.body.name;
-    book.price=req.body.price;
-    var query={_id:req.params.id}
-    Book.update(query,book, function(err){
-        if(err){
-            return err;
-        } else{
-            console.log("sumbitted")
-            res.redirect('/');
-        }
-    });
-});
-
-// clean system to clean detail of cart.
-app.get('/clean',function(req,res){
-    Order.find({},function(err,order,amount){
-        if(err){
-            return err;
-        } else {
-            total=0;
-            db.collection('orders').drop();
-            res.redirect("/");
-    }
-    });
-});
-
-
-//CREATE ID page to modify data with ID
-app.get('/bookID',function(req,res){
-    Book.find({},function(err,book){
-        if(err){
-            return err; 
-        } else {
-        res.render('bookID',{
-            title:"PubHub ",
-            book:book
-        });
-    }
-    });
-});
-//create edit page to update book infomation
-app.get('/edit',function(req,res){
-    Book.find({},function(err,book){
-        if(err){
-            return err;
-        } else {
-        res.render('edit',{
-            title:"PubHub ",
-            book:book
-        });
-    }
-    });
-});
-//uses id to get data
-app.get('/book/:id',function(req,res){
-        Book.findById(req.params.id, function(err, book){
-            res.render('book',{
-                title:'book detail',
-                book:book,
-           });
-        });
-    });
-
-app.get('/firebase/:id',function(req,res){
-    Book.findById(req.params.id, function(err, book){
-        res.render('book',{
-            title:'book detail',
-            book:book
-        });
-    });
-})
-// uses order's id to list the detail of order in the web.
-app.get('/order/:id',function(req,res){
-    Order.findById(req.params.id, function(err, order){
-        res.render('order',{
-            title:order.name,
-            order:order
-        });
-    });
-})
-// create a paypal page to sumbit the payment of transaction
-app.get('/paypal/',function(req,res){
-    Order.findById(req.params.id, function(err, order){
-        res.render('order',{
-            title:"paypal order",
-            order:order
-        });
-    });
-})
-//use Eidt key to edit book detail
-app.get('/book/update_book/:id',function(req,res){
-    Book.findById(req.params.id, function(err, book){
-        res.render('update_book',{
-            title:"Edit Book",
-            book:book
-        });
-    });
-})
-// create add book page
-app.get('/add',function(req,res){
-    res.render('add_book',{
-        title:'Add book'
-    });
-});
-
-// create a adding form to add new book 
-app.post('/add',function(req,res){   
-    var book=new Book();
-    book.barcode=req.body.barcode;
-    book.name=req.body.name;
-    book.price=req.body.price;
-// save data to mongodb 
-    book.save(function(err){
-        if(err){
-            return err;
-        } else{
-            console.log("sumbitted")
-            res.redirect('/');
-        }
-    });
-});
-
-
-
-// uses DELETE key to delete book
-app.delete('/book/:id', function(req,res){
-    var query={_id:req.params.id}
-    Book.remove(query, function(err){
-        if(err){
-            return err;
-        }
-        res.send("deleted");
-    });
-});
 //Remove the item in the shooping cart 
-app.delete('/order/:id', function(req,res){
-    var query={_id:req.params.id}
+app.delete('/books/order/:id', function(req,res){
+    Order.findById(req.params.id, function(err, order){
+        total=total-order.price;
+    });
+    var query={_id:req.params.id};
     Order.remove(query, function(err){
         if(err){
             return err;
         }else{
             res.send('deleted');   
         }   
-    });
-});
-// To calcualte the total price and create a record.
-app.get('/paypal/:id',function(req,res){
-    Book.findById(req.params.id, function(err, book){
-        total=total+book.price;
-        name=book.name;
-        name=String(name);
-        var order=new Order();
-        order.name=name;
-        order.price=book.price;
-        I+=name+",";
-        order.save(function(err){
-            if(err){
-                return err;
-            } else{
-                res.redirect('/shoopingcart');
-            };
-    });
-    
     });
 });
 // config of paypal sanbox
@@ -272,9 +141,9 @@ app.post('/pay/',function(req,res){
             "transactions": [{
                 "item_list": {
                     "items": [{
-                        "name": I,
+                        "name": 'order',
                         "sku": "001",
-                        "price": 11,
+                        "price": total,
                         "currency": "USD",
                         "quantity": 1
                     }]
@@ -298,7 +167,7 @@ paypal.payment.create(create_payment_json, function(err,payment){
     }
 });
 });
-// to sumbit  paypament in the paypal pay page and it will cleaning the data in the orders
+// create a confirm page and it will cleaning all data in the orders
 app.get('/confirm',function(req,res){
     db.collection('orders').drop();
     res.render('confirm',{
@@ -320,7 +189,7 @@ app.get("/success",function(req,res){
     };
 
 // to confirm payment
-    paypal.payment.execute(paymentId,execute_payment_json, function (err, payment) {
+paypal.payment.execute(paymentId,execute_payment_json, function (err, payment) {
         if(err){
         console.log(err);
         return err;
@@ -339,6 +208,27 @@ app.get('/cancel', function(req,res){
 
     });
 })
+
+
+// clean system to clean detail of cart.
+app.get('/clean',function(req,res){
+    Order.find({},function(err,order){
+        if(err){
+            return err;
+        } else {
+            total=0;
+            I="";
+            db.collection('orders').drop();
+            res.redirect("/");
+    }
+    });
+});
+
+let books = require('./routes/books');
+app.use('/books', books);
+let users = require('./routes/users');
+app.use('/users', users);
+
 // create a service call localhost:3000
 app.listen (3000,function(){
         console.log('Server started on port 3000...');
