@@ -1,0 +1,48 @@
+<html>
+<head>
+    <title>Firebase Realtime Database Web</title>
+    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+    script.
+        var config = {
+            apiKey: "AIzaSyDLHogcgChT5Z2JpRCq9wte-M6RD5GMX7s",
+            authDomain: "project-62f2c.firebaseapp.com",
+            databaseURL: "https://project-62f2c.firebaseio.com",
+            storageBucket: "project-62f2c.appspot.com"
+        };
+        firebase.initializeApp(config);
+</head>
+<body>
+    <table>
+        <tr>
+            <td>Id: </td>
+            <td><input type="text" name="id" id="item_id" /></td>
+        </tr>
+        <tr>
+            <td>Name: </td>
+            <td><input type="text" name="item_name" id="item_name" /></td>
+        </tr>
+        <tr>
+            <td>Price: </td>
+            <td><input type="text" name="item_price" id="item_price" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="button" value="Save" onclick="save_item();" />
+                <input type="button" value="Clean" onclick="delete_item();" />
+            </td>
+        </tr>
+    </table>
+    <h3>Items List</h3>
+ 
+    <table id="tbl_items_list" border="1">
+        <tr>
+            <td>ItemID</td>
+            <td>Name</td>
+            <td>Price</td>
+            <td>Quality</td>
+        </tr>
+    </table>
+    script
+        include ./fire.js
+</body>
+</html>

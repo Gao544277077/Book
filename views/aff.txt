@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+            <title>addcart</title>
+            <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+    </head>>        
+    <body>
+        <script>
+            var config = {
+                apiKey: "AIzaSyDLHogcgChT5Z2JpRCq9wte-M6RD5GMX7s",
+                authDomain: "project-62f2c.firebaseapp.com",
+                databaseURL: "https://project-62f2c.firebaseio.com",
+                storageBucket: "project-62f2c.appspot.com"
+            };
+            firebase.initializeApp(config);
+            
+            
+            
+        </script>    
+        <script src='a.js'>
+        </script>
+        <hr>
+        <textarea id='order' placeholder='Enter address'></textarea>
+        <button id='submitBtn' onclick='sumbitClick()'>sumbit</button>
+        
+
+    </body>
+    </html>>
+    

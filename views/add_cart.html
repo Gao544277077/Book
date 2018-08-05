@@ -1,0 +1,28 @@
+br
+br
+br
+h1 Book detail
+h5='Barcode:'+ book.barcode
+h5='Name: '+ book.name
+h5='Price: $'+ book.price
+hr
+textarea#order(placeholder='Enter address')
+button#submitBtn(onclick='sumbitClick()')
+i.fa.fa-arrow-right(aria-hidden='true')
+script(src='https://www.gstatic.com/firebasejs/5.3.0/firebase.js')
+script.
+    var config = {
+    apiKey: "AIzaSyDLHogcgChT5Z2JpRCq9wte-M6RD5GMX7s",
+    authDomain: "project-62f2c.firebaseapp.com",
+    databaseURL: "https://project-62f2c.firebaseio.com",
+    projectId: "project-62f2c",
+    storageBucket: "project-62f2c.appspot.com",
+    messagingSenderId: "805942321896"
+    };
+    firebase.initializeApp(config);
+script(src='index.js')
+
+a.btn.btn-default(href='/paypal/'+book._id) add to cart
+a.btn.btn-default(href='/book/update_book/'+book._id) Edit
+a.btn.btn-danger.delete-book(href='#',data-id=book._id) DELETE
+ 
