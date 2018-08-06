@@ -91,6 +91,8 @@ app.get('*', function(req, res, next){
   res.locals.user = req.user || null;
   next();
 });
+total=0;
+I=[];
   
 //CRETE HOME PAGE to view and modify data with bookname
 app.get('/',function(req,res){
@@ -221,6 +223,42 @@ app.get('/clean',function(req,res){
             db.collection('orders').drop();
             res.redirect("/");
     }
+    });
+});
+
+//Create a shooping cart page and uses 'order' database 
+app.get('/books/shoopingcart',function(req,res){
+    Order.find({},function(err,orders){
+            if(err){
+                return err;
+            } else {
+                console.log(orders);
+        res.render('shoopingcart',{
+            title:"shooping cart ",
+            orders:orders,
+           });
+    };
+    });
+});
+
+// To calcualte the total price and create a shooping record.
+app.get('/books/paypal/:id',function(req,res){
+    Book.findById(req.params.id, function(err, book){
+        total=total+book.price;
+        name=book.name;
+        name=String(name);
+        var order=new Order();
+        order.name=name;
+        order.price=book.price;
+        I+=name+",";
+        order.save(function(err){
+            if(err){
+                return err;
+            } else{
+                res.redirect('/books/shoopingcart');
+            };  
+    });
+    
     });
 });
 

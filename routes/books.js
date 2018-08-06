@@ -5,12 +5,15 @@ var Book = require('../models/book');
 var Order= require('../models/order');
 var mongoose=require("mongoose");
 var db= mongoose.connection;
+var total=0;
+var I=[];
 //Create a shooping cart page and uses 'order' database 
 router.get('/shoopingcart',function(req,res){
     Order.find({},function(err,orders){
             if(err){
                 return err;
             } else {
+                console.log(orders);
         res.render('shoopingcart',{
             title:"shooping cart ",
             orders:orders,
@@ -173,7 +176,7 @@ router.get('/paypal/:id',function(req,res){
                 return err;
             } else{
                 res.redirect('/books/shoopingcart');
-            };
+            };  
     });
     
     });
